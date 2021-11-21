@@ -61,7 +61,7 @@ class clf():
                     data[feat] =data[feat].astype('int64')
         label = data['label']
         data.pop('label')
-        print('Imbalance {:.2f}% ({:d}) / {:.2f}% ({:d}) - READMISSION / NO'.format(
+        print('Imbalance {:.2f}% ({:d}) / {:.2f}% ({:d}) - Yes / NO'.format(
             label.mean()*100,
             label.sum(),
             ((1-label.mean())*100),
@@ -128,7 +128,7 @@ class clf():
               model_for_plot,  
               out_file        = dotfile,
               feature_names   = self.features, 
-              class_names     = ['no', 'Readmission'], 
+              class_names     = ['no', 'Yes'], 
               filled          = True,
               proportion=True,
               rounded         = True
@@ -160,7 +160,7 @@ class clf():
               'fn': cm[1, 0], 'tp': cm[1, 1]}
         '''
         plt.show()
-        labels=['No','Readmission ' + str(self.label_name) +' days']
+        labels=['No', str(self.label_name)]
         print(classification_report(self.y_test, self.model.predict(self.x_test), target_names=labels))
         plot_confusion_matrix(self.model,self.x_test,self.y_test,display_labels=labels,normalize='true')
         plt.title(self.save_prefix+'_'+self.model_type+' norm over true')
