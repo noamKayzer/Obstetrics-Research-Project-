@@ -45,9 +45,6 @@ class clf():
                 data.pop(self.label_name)
         if 'cat' in self.filename:
             self.cat_feats = pd.read_excel(io='categorical features.xlsx').columns.tolist()
-            ############
-            ####### NEED TO RETURN BLOOD TYPE FOR LEARNING
-            ###########
             data.pop('Blood Type')
             for feat in self.cat_feats:
                 if feat in data.columns and data[feat].dtypes == 'float64':
@@ -148,7 +145,6 @@ class clf():
                              nan_mode = 'Forbidden',
                              #,learning_rate=0.1
                              #model_size_reg
-                             # class_names=['no', 'Readmission'],
                              auto_class_weights='Balanced',
                             # cat_features = self.cat_feats
                         )
@@ -302,7 +298,7 @@ class clf():
 #####################
 if __name__ == "__main__":              
     time_for_each_model_min=30
-    label_name = 'In labor cesarean'
+    label_name = #######DELETED DUE RESEARCH SENSITIVITY
     #tree = clf(label_name=90,model_type='DT',save_prefix='full_dataset')
     #full_data,full_label = tree.data_read(split_train_test=False)
     start_time = time.time()
@@ -364,42 +360,6 @@ if __name__ == "__main__":
     print_time('Fit',data_load_time,fit_time)
     print_time('Overall time:',start_time,end)
     
-    '''
-    start_time = time.time()
-    tree = clf(label_name=90,model_type='DT',save_prefix='full_dataset')
-    x_train,x_test,y_train,y_test = tree.data_read()
-    data_load_time=time.time()
-    tree.hpo(time_in_min=45)
-    tree.evalute()
-    tree.save()
-    fit_time=time.time()
-    tree.plot()
-    roc_plot_list.append(tree.roc_disp)
-    end = time.time()
-    print_time = lambda title, start,end: print('{} took {:.2f} sec'.format(title, end-start))
-    print_time('Data load',start_time,data_load_time)
-    print_time('Fit',data_load_time,fit_time)
-    print_time('Overall time:',start_time,end)
-    '''
-    
-    '''
-    start_time = time.time()
-    tree = clf(label_name=90,model_type='RF',save_prefix='full_dataset')
-    x_train,x_test,y_train,y_test = tree.data_read()
-    data_load_time=time.time()
-    tree.hpo(time_in_min=45)
-    tree.evalute()
-    tree.save()
-    fit_time=time.time()
-    print(f'acc on train:{tree.model.score(x_train,y_train)} test:{tree.model.score(x_test,y_test)}')
-    tree.plot()
-    roc_plot_list.append(tree.roc_disp)
-    end = time.time()
-    print_time = lambda title, start,end: print('{} took {:.2f} sec'.format(title, end-start))
-    print_time('Data load',start_time,data_load_time)
-    print_time('Fit',data_load_time,fit_time)
-    print_time('Overall time:',start_time,end)
-    '''
     ax = plt.gca()
     for i in roc_plot_list:
         i.plot(ax=ax, alpha=0.8)
