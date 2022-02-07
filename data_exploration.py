@@ -3,7 +3,7 @@
 Created on Tue Nov  2 20:21:49 2021
 
 @author: Noam
-Initiall data visualization: Descriptive statistics and covariance matrix 
+Initial data visualization: Descriptive statistics and covariance matrix 
 """
 # Exploratory Data Analysis-EDA
 from main import clf
@@ -40,70 +40,10 @@ from pdpbox import pdp, get_dataset, info_plots
 from dataset_preperation import data_read
 from dateutil.relativedelta import relativedelta
 import datetime
-discard_labels=['Ceasarean',
-                                     'Hospitalization length, days ' ,
-                                     'prolonged hospital stay','Vaginal tear',
-                                     'labor_complxity_axis1',
-                                     'labor_complxity_axis2','POP',
-                                                                 'דרגה 1',
-                                                'דרגה 2',                               
-                                                'דרגה 3',                              
-                                                'דרגה 4 ',                              
-                                                'Retained placenta/placental fragments  ' ,
-                                               	'Perineal tear grade 3/4',
-                                                   'Laceration'	,
-                                                   'Episiotomy',
-                                                   'Hemoglobin drop, gram/dl',
-                                                   'DELTA_ֹHB>3',
-                                                   'DELTA_ֹHB>4'	,
-                                                   'DELTA_ֹHB>5'	,
-                                                   'Chorioamionitis'	,
-                                                   'Puerperal fever'	,
-                                                   'Hexakapron'	,
-                                                   'Parenteral Iron administration',	
-                                                   'Blood products transfusion',
-                                                   'Hysterectomy	laparotomy',
-                                                   'Failed Vacuum',	'Vaccuum',
-                                                   '1-Minute Apgar score < 7',
-                                                   '5-Minute Apgar score < 7'	,
-                                                   'NICU admission'	,
-                                                   'Meconium aspiration syndrome'	,
-                                                   'Jaundice'	,
-                                                   'TTN'	,
-                                                   'Mechanical ventilation'	,
-                                                   'Seizures'	,
-                                                   'Erb’s palsy/fracture of clavicle'	,
-                                                   'Hypoglycemia'	,
-                                                   'Sepsis'	,
-                                                   'Encephalopathy'	,
-                                                   'Intracranial hemorrhage'	,
-                                                   'Birth asphyxia',
-                                                   'Prolonged hospital stay',
-                                                   'Hysterectomy', 'laparotomy',
-           'shoulder dystocia', 'Past Shoulder Dystocia',
-           'IUFD@Intrauterine Fetal Death@Antepartum Fetal Death@INTRAUTERINE DEATH@Cause of Death Unknown@Early Neonatal Death',
-           'Maternal ICU admissions ', 'Postpartum hemorrhage','GBS',
-    'Birthweight >4000 grams ',
-    'ANEMIA_11',
-    'ANEMIA_10',
-    'ANEMIA_9',
-    'ANEMIA_8',
-    'Gestational age at delivery<37 week ',
-    
-    'LGA',
-    'SGA',
-                                     'אורך הניתוח הקיסרי'	,
-                                     'אורך הניתוח הקיסרי-מתחילהעדלידה',
-                                     'אורך הלידה כולל שלב לטנטי_דקות',
-                                     'אורך הלידה ללא שלב לטנטי_דקות',
-           'אורך שלב ראשון_דקות',
-           'זמן ירידת מים_דקות', 
-           'אורך שלב שני_דקות',
-        'אורך שלב שלישי_דקות',
-    ]
+discard_labels=[...]
 label_name = 'In labor cesarean'
 tree = data_read(data_already_exist=True,label_name='In labor cesarean',
-                 filter_conds=['Primipara==1', 'Cesarean_Section_No_Trial_of_Labor==0','Home_or_car_delivery==0','Elective_CS==0',' `Non-vertex presentation`==0'],
+                 filter_conds=[...==1', '...==0','...==0','...==0',' ...==0'],
                  discard_labels=discard_labels)
 data,label =  tree.preprocess(tree.data)
 data['label']=label
