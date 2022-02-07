@@ -131,40 +131,12 @@ class data_read():
         print(f'labor pca explin:{pca.explained_variance_ratio_} of the variance of {labor_complxity_feats}')
         
         #features to replace nan in 0
-        feat_to_nan_zero = ['DELTA_ֹHB>3','DELTA_ֹHB>4','DELTA_ֹHB>5','Maternal ICU admissions ','Obsesity (BMI>30)','PAST MACROSOMIA',
-                            'דרגה 1',
-                                            'דרגה 2',                               
-                                            'דרגה 3',                              
-                                            'דרגה 4 ',                              
-                                            'Retained placenta/placental fragments  ' ,
-                                           	'Perineal tear grade 3/4',
-                                               'Laceration'	,
-                                               'Episiotomy',
-                                               'Vaginal tear',
-                                               'Past_preterm birth',
-                                               'TOLAC',
-                                               'Induction of labor'
-
-                            ]
+        feat_to_nan_zero = ......
         data[feat_to_nan_zero]  = data[feat_to_nan_zero].replace(np.nan,int(0))
-        #defult gender- male
-        data['Male gender']  = data['Male gender'].replace(np.nan,int(1))
-        #Past_preterm birth - 
+
 
         #features to replace nan in -1e7
-        feat_to_0 = ['אורך הלידה כולל שלב לטנטי_דקות'	 ,
-                         'אורך הלידה ללא שלב לטנטי_דקות'	,
-                            'אורך שלב ראשון_דקות'	,
-                            'זמן ירידת מים_דקות'	,
-                            'אורך שלב שני_דקות'	,
-                            'אורך שלב שלישי_דקות',
-                           'אורך הניתוח הקיסרי'	,
-                           'אורך הניתוח הקיסרי-מתחילהעדלידה',
-'labor_complxity_axis1',
-'labor_complxity_axis2',
-
-                           
-                            ]
+        feat_to_0 = [.......]
         #data[feat_to_0]  = data[feat_to_realmean].replace(np.nan,-1e7)
         data[feat_to_0]  = data[feat_to_0].replace(np.nan,0)
         #features to replace nan in median
@@ -172,15 +144,14 @@ class data_read():
         for feat in feat_to_med:
             data[feat]  = data[feat].replace(np.nan,data[feat].median())
         #weight will be replaced nan or 0 in week- specific median
-        ##### TODO:
-        feat_to_med = ['משקל']
+        feat_to_med = [...]
         for gender,twins,week in itertools.product(['0','1'],['0','1'],data['Gestational age at delivery'].unique()):
             if not np.isnan(week):
                 specific_class_cond = '`Male gender`=='+gender+' and `Multifetal gestation`=='+twins+' and `Gestational age at delivery`=='+str(week)
                 specific_class_cond_idx = data.query(specific_class_cond).index
                 class_infant_weight_median = data.loc[specific_class_cond_idx,'משקל'].median()
-                data.loc[specific_class_cond_idx,'משקל']  = data.loc[specific_class_cond_idx,'משקל'].replace(np.nan,class_infant_weight_median)
-                data.loc[specific_class_cond_idx,'משקל']  = data.loc[specific_class_cond_idx,'משקל'].replace(0,class_infant_weight_median)
+                data.loc[specific_class_cond_idx,'weight']  = data.loc[specific_class_cond_idx,'weight'].replace(np.nan,class_infant_weight_median)
+                data.loc[specific_class_cond_idx,'weight']  = data.loc[specific_class_cond_idx,'weight'].replace(0,class_infant_weight_median)
         #catgorical values, replace NaN with mode
         data['Blood Type'] = data['Blood Type'].replace(np.nan,data['Blood Type'].mode()[0])
         '''
@@ -245,7 +216,7 @@ class data_read():
         print(f'\n\nDiscard samples with nan values for features with less than {allow_nan_for_feat_percent}%')
         print(f'Samples reduces from {samples_n} to {len(data)}')
         # new features - 
-        weight_frac = np.argsort(data['משקל']) /len(data)
+        weight_frac = np.argsort(data['weight']) /len(data)
         data['weight_percent_abs'] = np.abs(weight_frac-0.5)*100
         gest_frac = np.argsort(data['Gestational age at delivery']) /len(data)
         data['Gestational_age_at_delivery_percent_abs'] = np.abs(gest_frac-0.5)*100
@@ -288,7 +259,7 @@ class data_read():
         data_wo_drop = data_wo_drop.dropna()
         data_wo_drop = data_wo_drop.drop(del_samples[del_samples.isin(data_wo_drop.index)],axis=0)
         
-        weight_frac = np.argsort(data_wo_drop['משקל']) /len(data)
+        weight_frac = np.argsort(data_wo_drop['weight']) /len(data)
         data_wo_drop['weight_percent_abs'] = np.abs(weight_frac-0.5)*100
         gest_frac = np.argsort(data_wo_drop['Gestational age at delivery']) /len(data)
         data_wo_drop['Gestational_age_at_delivery_percent_abs'] = np.abs(gest_frac-0.5)*100
@@ -384,74 +355,14 @@ class data_read():
 start_time = time.time()
 if __name__ == "__main__":  
     #tree = data_read(label_name=90)
-    discard_labels=['Ceasarean',
-                                     'Hospitalization length, days ' ,
-                                     'prolonged hospital stay','Vaginal tear',
-                                     'labor_complxity_axis1',
-                                     'labor_complxity_axis2','POP',
-                                                                 'דרגה 1',
-                                                'דרגה 2',                               
-                                                'דרגה 3',                              
-                                                'דרגה 4 ',                              
-                                                'Retained placenta/placental fragments  ' ,
-                                               	'Perineal tear grade 3/4',
-                                                   'Laceration'	,
-                                                   'Episiotomy',
-                                                   'Hemoglobin drop, gram/dl',
-                                                   'DELTA_ֹHB>3',
-                                                   'DELTA_ֹHB>4'	,
-                                                   'DELTA_ֹHB>5'	,
-                                                   'Chorioamionitis'	,
-                                                   'Puerperal fever'	,
-                                                   'Hexakapron'	,
-                                                   'Parenteral Iron administration',	
-                                                   'Blood products transfusion',
-                                                   'Hysterectomy	laparotomy',
-                                                   'Failed Vacuum',	'Vaccuum',
-                                                   '1-Minute Apgar score < 7',
-                                                   '5-Minute Apgar score < 7'	,
-                                                   'NICU admission'	,
-                                                   'Meconium aspiration syndrome'	,
-                                                   'Jaundice'	,
-                                                   'TTN'	,
-                                                   'Mechanical ventilation'	,
-                                                   'Seizures'	,
-                                                   'Erb’s palsy/fracture of clavicle'	,
-                                                   'Hypoglycemia'	,
-                                                   'Sepsis'	,
-                                                   'Encephalopathy'	,
-                                                   'Intracranial hemorrhage'	,
-                                                   'Birth asphyxia',
-                                                   'Prolonged hospital stay',
-                                                   'Hysterectomy', 'laparotomy',
-           'shoulder dystocia', 'Past Shoulder Dystocia',
-           'IUFD@Intrauterine Fetal Death@Antepartum Fetal Death@INTRAUTERINE DEATH@Cause of Death Unknown@Early Neonatal Death',
-           'Maternal ICU admissions ', 'Postpartum hemorrhage','GBS',
-    'Birthweight >4000 grams ',
-    'ANEMIA_11',
-    'ANEMIA_10',
-    'ANEMIA_9',
-    'ANEMIA_8',
-    'Gestational age at delivery<37 week ',
-    
-    'LGA',
-    'SGA',
-                                     'אורך הניתוח הקיסרי'	,
-                                     'אורך הניתוח הקיסרי-מתחילהעדלידה',
-                                     'אורך הלידה כולל שלב לטנטי_דקות',
-                                     'אורך הלידה ללא שלב לטנטי_דקות',
-           'אורך שלב ראשון_דקות',
-           'זמן ירידת מים_דקות', 
-           'אורך שלב שני_דקות',
-        'אורך שלב שלישי_דקות',
-    ]
+    discard_labels=[...]
     tree = data_read(data_already_exist=True,label_name='In labor cesarean',
-                     filter_conds=['Primipara==1', 'Cesarean_Section_No_Trial_of_Labor==0','Home_or_car_delivery==0','Elective_CS==0',' `Non-vertex presentation`==0'],
+                     filter_conds=['...==1', '...==0','...==0','...==0',' ...==0'],
                      discard_labels=discard_labels,name_spec='+temp')
     data,label =  tree.preprocess(tree.data)
     
     tree = data_read(data_already_exist=True,label_name='In labor cesarean',
-                     filter_conds=['Primipara==1', 'Cesarean_Section_No_Trial_of_Labor==0','Home_or_car_delivery==0','Elective_CS==0',' `Non-vertex presentation`==0'],
+                     filter_conds=['...==1', '...==0','...==0','...==0',' ...==0'],
                      discard_labels=[*discard_labels,'temper','month','dayofweek'])
     data,label =  tree.preprocess(tree.data)
 
