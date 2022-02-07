@@ -32,8 +32,8 @@ import plotly.io as pio
 pio.renderers.default='svg'
 import shap
 from catboost import CatBoostClassifier
-
-
+from main import clf
+"""
 class clf():
     def __init__(self,label_name,model_path, model_type='DT',dataset_filename='preproccesed_dataset.pkl',save_prefix=''):
         self.model_type = model_type
@@ -61,7 +61,7 @@ class clf():
                     data[feat] =data[feat].astype('int64')
         label = data['label']
         data.pop('label')
-        print('Imbalance {:.2f}% ({:d}) / {:.2f}% ({:d}) - Yes / NO'.format(
+        print('Imbalance {:.2f}% ({:d}) / {:.2f}% ({:d}) - YES / NO'.format(
             label.mean()*100,
             label.sum(),
             ((1-label.mean())*100),
@@ -128,7 +128,7 @@ class clf():
               model_for_plot,  
               out_file        = dotfile,
               feature_names   = self.features, 
-              class_names     = ['no', 'Yes'], 
+              class_names     = ['no', 'Readmission'], 
               filled          = True,
               proportion=True,
               rounded         = True
@@ -160,7 +160,7 @@ class clf():
               'fn': cm[1, 0], 'tp': cm[1, 1]}
         '''
         plt.show()
-        labels=['No', str(self.label_name)]
+        labels=['No','Readmission ' + str(self.label_name) +' days']
         print(classification_report(self.y_test, self.model.predict(self.x_test), target_names=labels))
         plot_confusion_matrix(self.model,self.x_test,self.y_test,display_labels=labels,normalize='true')
         plt.title(self.save_prefix+'_'+self.model_type+' norm over true')
@@ -187,10 +187,11 @@ class clf():
             with open(filename, 'rb') as handle:
                 self.model = pickle.load(handle)
                 
-
+"""
+'''
 start_time = time.time()
 model_path = 'full_dataset_catmodel.pkl'
-tree2 = clf(label_name=90,model_type='cat',dataset_filename='over_under_aug_dataset_cat.pkl',model_path = model_path)
+tree2 = clf(label_name=90,model_type='cat',filename='over_under_aug_dataset_cat.pkl',load_exist_model = model_path)
 tree2.multi_obejctive=False
 x_train,x_test,y_train,y_test = tree2.data_read()
 data_load_time=time.time()
@@ -199,31 +200,62 @@ tree2.evalute()
 
 fit_time=time.time()
 tree2.plot()
-roc_plot_list=[]
-roc_plot_list.append(tree2.roc_disp)
+
 end = time.time()
-
-start_time = time.time()
-model_path = 'overunder_dataset_catmodel.pkl'
-tree2 = clf(label_name=90,model_type='cat',dataset_filename='over_under_aug_dataset_cat.pkl',model_path = model_path)
-tree2.multi_obejctive=False
-x_train,x_test,y_train,y_test = tree2.data_read()
-data_load_time=time.time()
-
-tree2.evalute()
-
-fit_time=time.time()
-tree2.plot()
-roc_plot_list.append(tree2.roc_disp)
-end = time.time()
-print_time = lambda title, start,end: print('{} took {:.2f} sec'.format(title, end-start))
-print_time('Data load',start_time,data_load_time)
-print_time('Fit',data_load_time,fit_time)
-print_time('Overall time:',start_time,end)
-
-
 '''
+print('NOTE:the train and test samples arent the same one that was used for learning, therfore a data leakage of train set to test is oocur which predict better estimation than reality. these plots are just estimation!')
+start_time = time.time()
+model_path = 'full_dataset_catmodel.pkl'
+label_name= 'In labor cesarean'
+tree2 = clf(label_name=label_name,model_type='cat',filename='preproccesed_dataset_cat.pkl',save_prefix='full_dataset',load_exist_model = model_path)
+tree2.multi_obejctive=False
+x_train,x_test,y_train,y_test = tree2.data_read()
+data_load_time=time.time()
+
+tree2.evalute()
+#tree2.shap_plot(plot_type='dependence')
+fit_time=time.time()
+roc_plot_list=[]
+
+tree2.plot()
+roc_plot_list.append(tree2.roc_disp)
+model_path = 'full_dataset_DTmodel.pkl'
+start_time = time.time()
+proba = tree2.model.predict_proba(tree2.x_test)
+correct_pred = tree2.model.predict(tree2.x_test)==tree2.y_test
+proba_df = tree2.x_test.copy()
+proba_df['label']= tree2.y_test
+proba_df[['proba_neg','proba_pos']]= proba
+proba_df['proba_diff']= proba_df['proba_pos']-proba_df['proba_neg']
+proba_df['abs_proba_diff']= np.abs(proba_df['proba_diff'])
+proba_df['correct_pred']= correct_pred
+proba_df.sort_values(by='proba_diff')
+b=proba_df.head(10)
+import plotly.express as px
+px.violin(proba_df,
+          y='abs_proba_diff',
+          x=pd.qcut(proba_df['Maternal age, years'], 8,labels=False),
+          points="all",hover_data=[proba_df.index])
+plt.hist(proba[correct_pred,1])
+plt.hist(proba[~correct_pred,1])
+tree3 = clf(label_name=label_name,model_type='DT',filename='preproccesed_dataset.pkl',save_prefix='overunder_dataset',load_exist_model = model_path)
+x_train,x_test,y_train,y_test = tree3.data_read()
+data_load_time=time.time()
+
+tree3.evalute()
+
+tree3.plot()
+roc_plot_list.append(tree3.roc_disp)
+
+model_path = 'full_dataset_DTmodel.pkl'
+start_time = time.time()
+tree1 = clf(label_name=label_name,model_type='RF',filename='preproccesed_dataset.pkl',save_prefix='overunder_dataset',load_exist_model = model_path)
+x_train,x_test,y_train,y_test = tree1.data_read()
+data_load_time=time.time()
+tree1.evalute()
+tree1.plot()
+roc_plot_list.append(tree1.roc_disp)
+
 ax = plt.gca()
 for i in roc_plot_list:
     i.plot(ax=ax, alpha=0.8)
-'''
