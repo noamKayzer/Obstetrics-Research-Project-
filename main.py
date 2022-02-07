@@ -32,7 +32,14 @@ from sklearn.metrics import euclidean_distances
 from imblearn.under_sampling import TomekLinks
 from imblearn.under_sampling import RandomUnderSampler
 
-#conda install catboost shap plotly optuna pickle
+##### Notes
+##### Datasets: hospital SZ for training and hospital BH for external validation 
+##### Classifiers: Logistic Regression, Decision Tree, Random Forest, CatBoost (GBDT), and an ensemble of a few of these classifiers. 
+##### validation by random test-train split or by last year as a test group (mostly used in healthcare studies, enabling a more futuristic-based evaluation of the model)
+##### resampling by under-sampling with or without SMOTE upsampling
+##### scoring models by discrimination ability (ROC AUC)
+##### Model Explanation with SHAP library: feature importance, distribution of each feature's SHAP values, and interactions examination.
+
 class clf():
     def __init__(self,label_name, model_type='DT',filename='preproccesed_dataset.pkl',
                  save_prefix='',load_exist_model=False,models_list=[],
@@ -87,16 +94,6 @@ class clf():
         self.scorer=self.get_scorer(label)
         
         if split_train_test:
-            if 'augment_grp' in data.columns:
-                train_test_splitter = sklearn.model_selection.GroupKFold(n_splits=4)
-                for train_idxs, test_idxs in train_test_splitter.split(data, label, data['augment_grp']):
-                    x_train = data.iloc[train_idxs,:]
-                    x_test = data.iloc[test_idxs,:]
-                    y_train = label.iloc[train_idxs]
-                    y_test = label.iloc[test_idxs]
-                    x_train.pop('augment_grp')
-                    x_test.pop('augment_grp')
-            else:
                 if self.val_split_method == 'random':
                     #random split
                     data.pop('year')
@@ -559,28 +556,10 @@ class stacked_clf(BaseEstimator, ClassifierMixin):
 if __name__ == "__main__":              
     time_for_each_model_min=5
     label_name = 'In labor cesarean'
-    #tree = clf(label_name=90,model_type='DT',save_prefix='full_dataset')
-    #full_data,full_label = tree.data_read(split_train_test=False)
     roc_plot_list=[]
-    #ext_roc_plot_list=[]
-    start_time = time.time()
-    
     start_time = time.time()
     print_time = lambda title, start,end: print('{} took {:.2f} sec'.format(title, end-start))
-    '''
-    tree5 = clf(label_name=label_name,model_type='cat',filename='SZ_preproccesed_dataset+vaginal_test_cat.pkl',save_prefix='full_dataset')
     
-    tree5.multi_obejctive=False
-    x_train,x_test,y_train,y_test = tree5.data_read()
-    print(f'data len{len(y_train)+len(y_test)}')
-    data_load_time=time.time()
-    tree5.hpo(time_in_min=time_for_each_model_min)
-    tree5.evalute()
-    tree5.save()
-    fit_time=time.time()
-    tree5.plot()
-    roc_plot_list.append(tree5.roc_disp)
-    '''
     tree2 = clf(label_name=label_name,model_type='cat',filename='SZ_preproccesed_dataset_cat.pkl',
                 save_prefix='full_dataset')
     
