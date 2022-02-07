@@ -16,8 +16,11 @@ Main training of logistic regression and 3 tree-based models (cat boost -gradien
 Hyper-parameters optimized with Optuna library for the maximal value of one of 3 scoring matrices: ROC AUC, recall, F1 score. 
 Plots generated: ROC, confusion matrices, shap values, tree visualization (for non-ensemble classifier)
 
-Few example figures from the projects: AUCs of the models, the 'fetus weight' U curve risk effect (which is reasonable- a very small or very big fetuses are correlated with a higher chance of surgery), and the interaction between the fetus weight and use of epidural analgesia (which experts found to be surprising).
-
+Few example figures from the projects: 
+1) AUCs of the models
+2) 
 ![Figure 2021-12-29 105122 (35)](https://user-images.githubusercontent.com/62498821/152750053-8987772c-6213-40db-a0ed-e8a50672f0e5.png)
 
+2) The 'fetus weight' U curve risk effect (which is reasonable- a very small or very big fetuses are correlated with a higher chance of surgery), and the interaction between the fetus weight and use of epidural analgesia (which experts found to be surprising).
+3) 
 ![FETUS AND EPIDURAL](https://user-images.githubusercontent.com/62498821/152753501-fb3f57f2-4acb-47d8-9e4e-c0fee2d5de47.png)
