@@ -19,4 +19,4 @@ Plots generated: ROC, confusion matrices, shap values, tree visualization (for n
 Few example figures from the projects: AUCs of the models, the 'fetus weight' U curve risk effect (which is reasonable- a very small or very big fetuses are correlated with a higher chance of surgery), and the interaction between the fetus weight and use of epidural analgesia (which experts found to be surprising).
 
 ![Figure 2021-12-29 105122 (35)](https://user-images.githubusercontent.com/62498821/152750053-8987772c-6213-40db-a0ed-e8a50672f0e5.png)
-![FETUS AND EPIDURAL](https://user-images.githubusercontent.com/62498821/152752493-3cfb2766-9a79-4acc-89c8-0e2402ddc40d.png)
+![FETUS AND EPIDURAL](https://user-images.githubusercontent.com/62498821/152753030-50d60109-a52e-4783-8802-fb69325beee5.jpg)
